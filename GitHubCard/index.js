@@ -24,8 +24,6 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
-
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
@@ -45,6 +43,99 @@ const followersArray = [];
 </div>
 
 */
+
+
+const followersArray = [
+  'denmercs',
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
+
+followersArray.forEach(follower => {
+  axios.get(`https://api.github.com/users/${follower}`)
+    .then(user => {
+      console.log('User', user);
+
+      const avatar = user.data.avatar_url;
+      const gitName = user.data.name;
+      const gitUserName = user.data.login;
+      const gitLocation = user.data.location;
+      const gitProfile = user.data.html_url;
+      const gitFollowers = user.data.followers;
+      const gitFollowing = user.data.following;
+      const gitBio = user.data.bio;
+
+      const userProfile = userCard(avatar, gitName, gitUserName, gitLocation, gitProfile, gitFollowers, gitFollowing, gitBio);
+
+      const cards = document.querySelector('.cards');
+
+      console.log(userProfile);
+      cards.appendChild(userProfile);
+    })
+    .catch(error => {
+      console.log('There is an error on:', error);
+    });
+})
+
+// PROFILE
+
+
+
+function userCard(avatar, gitName, gitUserName, gitLocation, gitProfile, gitFollowers, gitFollowing, gitBio) {
+  // creating all element necessary
+  let card = document.createElement('div');
+  let img = document.createElement('img');
+  let cardInfo = document.createElement('div')
+  let name = document.createElement('h3');
+  let username = document.createElement('p');
+  let location = document.createElement('p');
+  let profile = document.createElement('p');
+  let button = document.createElement('a');
+  let followers = document.createElement('p');
+  let following = document.createElement('p');
+  let bio = document.createElement('p');
+
+
+  // append element to card
+  card.appendChild(img);
+  img.src = avatar;
+  card.appendChild(cardInfo);
+  card.classList.add('card');
+
+  // append element to cardInfo
+  cardInfo.classList.add('card-info');
+  name.classList.add('name');
+  name.textContent = gitName;
+  cardInfo.appendChild(name);
+
+  username.classList.add('username');
+  username.textContent = gitUserName;
+  cardInfo.appendChild(username);
+
+  location.textContent = `Location: ${gitLocation}`;
+  cardInfo.appendChild(location);
+
+  profile.textContent = 'Profile: ';
+  cardInfo.appendChild(profile);
+  button.textContent = 'Click Here';
+  button.href = gitProfile;
+  profile.appendChild(button);
+
+  followers.textContent = `Followers: ${gitFollowers}`;
+  cardInfo.appendChild(followers);
+  following.textContent = `Following: ${gitFollowing}`;
+  cardInfo.appendChild(following);
+
+  bio.textContent = `Bio: ${gitBio}`;
+  cardInfo.appendChild(bio);
+
+  return card;
+}
+
+
 
 /* List of LS Instructors Github username's: 
   tetondan
